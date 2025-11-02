@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memeception</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Theme Toggle -->
+  <button id="theme-toggle" aria-label="Toggle theme">
+    <svg id="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    <svg id="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+
   <div class="container">
-    <h1>Memeception</h1>
+    <h1 class="animated-title">Memeception</h1>
     <div class="controls">
       <select id="genre">
         <option value="dankmemes">Dank</option>
@@ -23,14 +41,20 @@
       </select>
       <button id="meme-btn">Gimme a Meme</button>
     </div>
-
     <div class="meme-card">
-      <img id="meme-box" src="" alt="Your meme will appear here" loading="lazy" />
+      <img id="meme-box" src="" alt="Your meme will appear here" loading="lazy">
       <p id="credit"></p>
+      <button id="save-btn" style="display:none;">💾 Save Meme</button>
+    </div>
+    
+    <!-- Saved Memes Section -->
+    <div id="saved-section" style="display:none;">
+      <h2>Saved Memes</h2>
+      <div id="saved-memes-grid"></div>
     </div>
 
-    <footer>
-      Powered by <a href="https://meme-api.com" target="_blank">Meme API</a> | © 2025 Memeception
+    <footer class="site-footer">
+      made by nilim
     </footer>
   </div>
   <script src="script.js"></script>
