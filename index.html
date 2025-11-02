@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Memeception</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Memeception</h1>
+      <p class="subtitle">Press the button. Laugh. Repeat.</p>
+    </header>
+
+    <section class="controls">
+      <div class="genres" id="genres"></div>
+      <div class="actions">
+        <button id="prevBtn" class="btn" disabled>Prev</button>
+        <button id="getBtn" class="btn primary">Gimme a Meme</button>
+        <button id="nextBtn" class="btn" disabled>Next</button>
+      </div>
+    </section>
+
+    <section class="meme-area">
+      <div id="memePlaceholder" class="meme-box" aria-live="polite">
+        <div class="placeholder-text">Click "Gimme a Meme" to start</div>
+      </div>
+      <p id="creditLine" class="credit"></p>
+    </section>
+
+    <footer class="site-footer">
+      Powered by <a href="https://meme-api.com" target="_blank" rel="noopener">Meme API</a>. Credits link to Reddit posts.
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
