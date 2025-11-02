@@ -63,14 +63,72 @@ async function getMeme() {
       // Show save button
       saveBtn.style.display = "inline-block";
     } else {
-      memeBox.src = "https://i.imgur.com/qIufhof.png";
-      credit.textContent = "Meme failed to load 😢";
-      currentMeme = null;
+      // If dark humor genre fails, try cursedcomments as fallback
+      if (genre === "darkmemes") {
+        const fallbackRes = await fetch(`https://meme-api.com/gimme/cursedcomments`);
+        const fallbackData = await fallbackRes.json();
+        
+        if (fallbackData.url && fallbackData.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+          memeBox.src = fallbackData.url;
+          credit.innerHTML = `<a href="${fallbackData.postLink}" target="_blank">r/${fallbackData.subreddit}</a> • by u/${fallbackData.author}`;
+          
+          // Store current meme data
+          currentMeme = {
+            url: fallbackData.url,
+            subreddit: fallbackData.subreddit,
+            author: fallbackData.author,
+            postLink: fallbackData.postLink
+          };
+          
+          // Show save button
+          saveBtn.style.display = "inline-block";
+        } else {
+          memeBox.src = "https://i.imgur.com/qIufhof.png";
+          credit.textContent = "Meme failed to load 😢";
+          currentMeme = null;
+        }
+      } else {
+        memeBox.src = "https://i.imgur.com/qIufhof.png";
+        credit.textContent = "Meme failed to load 😢";
+        currentMeme = null;
+      }
     }
   } catch (err) {
-    memeBox.src = "https://i.imgur.com/qIufhof.png";
-    credit.textContent = "Network issue — please try again.";
-    currentMeme = null;
+    // If dark humor genre fails, try cursedcomments as fallback
+    if (genre === "darkmemes") {
+      try {
+        const fallbackRes = await fetch(`https://meme-api.com/gimme/cursedcomments`);
+        const fallbackData = await fallbackRes.json();
+        
+        if (fallbackData.url && fallbackData.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+          memeBox.src = fallbackData.url;
+          credit.innerHTML = `<a href="${fallbackData.postLink}" target="_blank">r/${fallbackData.subreddit}</a> • by u/${fallbackData.author}`;
+          
+          // Store current meme data
+          currentMeme = {
+            url: fallbackData.url,
+            subreddit: fallbackData.subreddit,
+            author: fallbackData.author,
+            postLink: fallbackData.postLink
+          };
+          
+          // Show save button
+          saveBtn.style.display = "inline-block";
+        } else {
+          memeBox.src = "https://i.imgur.com/qIufhof.png";
+          credit.textContent = "Network issue — please try again.";
+          currentMeme = null;
+        }
+      } catch (fallbackErr) {
+        memeBox.src = "https://i.imgur.com/qIufhof.png";
+        credit.textContent = "Network issue — please try again.";
+        currentMeme = null;
+      }
+    } else {
+      memeBox.src = "https://i.imgur.com/qIufhof.png";
+      credit.textContent = "Network issue — please try again.";
+      currentMeme = null;
+    }
   }
 }
 
