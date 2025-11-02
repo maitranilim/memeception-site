@@ -1,39 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Memeception</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <h1>Memeception</h1>
-      <p class="subtitle">Press the button. Laugh. Repeat.</p>
-    </header>
+  <div class="container">
+    <h1>Memeception</h1>
+    <div class="controls">
+      <select id="genre">
+        <option value="dankmemes">Dank</option>
+        <option value="ProgrammerHumor">Tech</option>
+        <option value="darkmemes">Dark Humor</option>
+        <option value="wholesomememes">Wholesome</option>
+        <option value="me_irl">Relatable</option>
+        <option value="puns">Pun</option>
+        <option value="sarcasm">Sarcasm</option>
+        <option value="cringememes">Cringe</option>
+      </select>
+      <button id="meme-btn">Gimme a Meme</button>
+    </div>
 
-    <section class="controls">
-      <div class="genres" id="genres"></div>
-      <div class="actions">
-        <button id="prevBtn" class="btn" disabled>Prev</button>
-        <button id="getBtn" class="btn primary">Gimme a Meme</button>
-        <button id="nextBtn" class="btn" disabled>Next</button>
-      </div>
-    </section>
+    <div class="meme-card">
+      <img id="meme-box" src="" alt="Your meme will appear here" loading="lazy" />
+      <p id="credit"></p>
+    </div>
 
-    <section class="meme-area">
-      <div id="memePlaceholder" class="meme-box" aria-live="polite">
-        <div class="placeholder-text">Click "Gimme a Meme" to start</div>
-      </div>
-      <p id="creditLine" class="credit"></p>
-    </section>
-
-    <footer class="site-footer">
-      Powered by <a href="https://meme-api.com" target="_blank" rel="noopener">Meme API</a>. Credits link to Reddit posts.
+    <footer>
+      Powered by <a href="https://meme-api.com" target="_blank">Meme API</a> | © 2025 Memeception
     </footer>
-  </main>
-
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
