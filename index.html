@@ -1,100 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-adsense-account" content="ca-pub-4315629123147124">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memeception | 3D Interactive Meme Generator</title>
+  <meta name="description" content="Generate viral memes instantly with Memeception. A fast, 3D interactive meme viewer and saver powered by the Meme API." />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- JSON-LD SEO Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "What is Memeception?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Memeception is a motion-first, real-time meme generator that fetches content from Reddit's top communities."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Is this tool free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Memeception is 100% free and open source, with no watermarks."
+      }
+    }, {
+      "@type": "Question",
+      "name": "How do I save memes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Click the 'Save' button (floppy disk icon) to store memes locally in your browser's storage."
+      }
+    }]
+  }
+  </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315629123147124"
      crossorigin="anonymous"></script>
-  <title>Memeception</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <!-- Theme Toggle -->
-  <button id="theme-toggle" aria-label="Toggle theme">
-    <svg id="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-    </svg>
-    <svg id="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>
-  </button>
+  <!-- Background 3D Scene -->
+  <div id="canvas-container"></div>
 
-  <div class="container">
-    <h1 class="animated-title">Memeception</h1>
-    <div class="controls">
-      <select id="genre">
-        <option value="dankmemes">Dank</option>
-        <option value="ProgrammerHumor">Tech</option>
-        <option value="darkmemes">Dark Humor</option>
-        <option value="wholesomememes">Wholesome</option>
-        <option value="me_irl">Relatable</option>
-        <option value="puns">Pun</option>
-        <option value="sarcasm">Sarcasm</option>
-        <option value="cringememes">Cringe</option>
-      </select>
-      <button id="meme-btn">Gimme a Meme</button>
-    </div>
-    <div class="meme-card">
-      <img id="meme-box" src="" alt="Your meme will appear here" loading="lazy">
-      <p id="credit"></p>
-      <button id="save-btn" style="display:none;">💾 Save Meme</button>
-    </div>
-    
-    <!-- Saved Memes Section -->
-    <div id="saved-section" style="display:none;">
-      <h2>Saved Memes</h2>
-      <div id="saved-memes-grid"></div>
+  <div class="app-wrapper">
+    <header>
+      <h1>Meme<span>ception</span></h1>
+      <div class="header-actions">
+        <button class="micro-btn" id="view-saved-btn" aria-label="View Saved">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+        <button class="micro-btn" id="theme-toggle" aria-label="Toggle Theme">
+          <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="icon-moon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Genre Selector -->
+    <div class="scroll-mask" id="genre-container">
+      <div class="pill active" data-value="dankmemes">Dank</div>
+      <div class="pill" data-value="ProgrammerHumor">Tech</div>
+      <div class="pill" data-value="wholesomememes">Wholesome</div>
+      <div class="pill" data-value="me_irl">Relatable</div>
+      <div class="pill" data-value="darkmemes">Dark</div>
+      <div class="pill" data-value="puns">Puns</div>
+      <div class="pill" data-value="sarcasm">Sarcasm</div>
+      <div class="pill" data-value="cringememes">Cringe</div>
     </div>
 
-    <footer class="site-footer">
-      made by nilim
-              <!-- FAQ Section for SEO -->
-        <section id="faq" class="faq-section">
-            <div class="faq-container">
-                <h2>Frequently Asked Questions - Memeception</h2>
-                
-                <div class="faq-content">
-                    <h3>What is Memeception?</h3>
-                    <p>Memeception is a fast, free online meme generator that lets you create, remix and download memes in seconds using popular meme templates and your own images. It is designed for creators who want an insanely quick, mobile-friendly way to make viral, high-quality memes for Instagram, X (Twitter), YouTube and more.</p>
+    <!-- 3D Tilt Card -->
+    <div class="card-scene">
+      <div class="meme-card" id="tilt-card">
+        <div class="loading-overlay" id="loader">
+          <div class="spinner"></div>
+        </div>
+        <div class="meme-image-container">
+          <img id="meme-img" src="" alt="Meme content" />
+        </div>
+      </div>
+    </div>
 
-                    <h3>How do I use this meme generator?</h3>
-                    <p>Using Memeception is simple: Select your preferred meme category (Dank, Tech, Dark Humor, Wholesome, Relatable, Pun, Sarcasm, Cringe) from the dropdown menu at the top. Click "Gimme a Meme" to generate a random meme template. Once your meme appears, you can save, download, or share it directly to your favorite social media platforms.</p>
+    <div class="credit" id="credit">
+      <!-- Credits inject here -->
+    </div>
 
-                    <h3>Can I create custom memeception or layered memes?</h3>
-                    <p>Yes, Memeception supports creating custom and layered memes. You can stack screenshots or multiple images to build meta-memes or "memeception" style posts that remix existing memes into new joke layers. This is perfect for advanced meme creators who like blending formats, reactions and inside jokes into a single template.</p>
+    <div class="actions">
+      <button class="main-btn" id="fetch-btn">Gimme Meme</button>
+      <button class="save-btn" id="save-btn" disabled>💾</button>
+    </div>
 
-                    <h3>Is Memeception really free to use?</h3>
-                    <p>Absolutely! This meme maker is completely free to use in your browser with no installation required. Just open the site, generate your meme and save it instantly in high quality. No hidden fees, subscriptions, or watermarks.</p>
+    <!-- SEO / FAQ Section -->
+    <section class="seo-section">
+      <h2>Frequently Asked Questions</h2>
 
-                    <h3>Do I need an account to make memes?</h3>
-                    <p>You can start creating and downloading memes without signing up or logging in. Optional account features (if enabled) may help you save favorites, recent templates or meme drafts for later editing, but they're not required to use the core meme generator functionality.</p>
+      <details>
+        <summary>What is Memeception?</summary>
+        <div class="faq-answer">
+          Memeception is a motion-first, real-time meme generator that instantly fetches the freshest content from Reddit's top humor communities. It uses a lightweight API to deliver memes without tracking or clutter.
+        </div>
+      </details>
 
-                    <h3>What devices and browsers does Memeception support?</h3>
-                    <p>Memeception is mobile-friendly and works in all modern browsers on phones, tablets and desktops. You can generate memes quickly whether you are on Android, iOS, Windows, macOS or Linux. The responsive design ensures a smooth experience across all screen sizes.</p>
+      <details>
+        <summary>Is this tool free to use?</summary>
+        <div class="faq-answer">
+          Yes! Memeception is 100% free. You can browse unlimited memes, switch between dark and light modes, and save your favorites locally without paying a cent or seeing intrusive ads.
+        </div>
+      </details>
 
-                    <h3>Which popular meme templates are available here?</h3>
-                    <p>Memeception supports a diverse collection of classic meme formats and trending templates that evolve regularly. Our collection includes image macros, reaction templates, and modern viral formats similar to other popular online meme generators. New meme templates and layout options are added continuously so you always have fresh formats for your content.</p>
+      <details>
+        <summary>How do I save memes?</summary>
+        <div class="faq-answer">
+          Simply tap the 'Floppy Disk' icon next to the 'Gimme Meme' button. Your saved memes are stored securely in your browser's local storage, meaning they persist even if you close the tab.
+        </div>
+      </details>
 
-                    <h3>Can I use memes made here on social media or YouTube?</h3>
-                    <p>Yes, you can share, repost and integrate your generated memes into Instagram posts, TikTok shorts, YouTube reels, community posts and video thumbnails, subject to the underlying image and template rights. Always respect platform guidelines and any copyrights attached to third-party images or characters used in your memes.</p>
+      <details>
+        <summary>Why use this over Instagram?</summary>
+        <div class="faq-answer">
+          Speed and focus. Memeception strips away the comments, likes, and algorithms, giving you raw, unadulterated humor in a clean, 3D interactive interface designed for pure enjoyment.
+        </div>
+      </details>
+    </section>
 
-                    <h3>What are common searches people use to find Memeception?</h3>
-                    <p>People often search for terms like "Memeception meme generator", "Memeception meme maker online", "free meme generator no watermark", "online meme caption maker", "fast mobile meme generator", "AI meme generator website", "meme template generator", "instant meme creator" and "best meme making tool". This FAQ helps search engines understand that Memeception is a free, fast, browser-based meme creator for making high-quality memes with templates, captions and custom images.</p>
-                </div>
-            </div>
-        </section>
-    </footer>
+    <div class="credit-bar">
+      Built with Love by Niltra
+    </div>
   </div>
-  <script src="script.js"></script>
+
+  <!-- Saved Drawer -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h3>Saved Memes</h3>
+      <button class="close-drawer" id="close-drawer">Close</button>
+    </div>
+    <div class="saved-grid" id="saved-grid">
+      <!-- Saved Items -->
+    </div>
+  </div>
+
+  <!-- App JS -->
+  <script src="app.js"></script>
 </body>
 </html>
