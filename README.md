@@ -1,10 +1,21 @@
 # Memeception
 
-Tiny static meme site that fetches memes from Meme API and shows per-meme credits.
+A lightweight meme viewer with a 3D background, genre picker, and local save feature.
 
-How to use:
-- Click a genre pill to choose genre.
-- Click "Gimme a Meme" to fetch.
-- Use Prev/Next to navigate cached memes (saved to localStorage).
+## Features
+- Fetch memes by genre (subreddit).
+- 3D animated background + tilt meme card.
+- Dark/light theme toggle.
+- Save memes locally (browser storage) and manage them in a drawer.
 
-This project is static — no build step needed. Deploy on Vercel by importing the repo.
+## Run locally
+1. Download/clone the project.
+2. Open `index.html` in a browser (or use a local server like VS Code Live Server).
+
+## Files
+- `index.html` — UI + SEO tags
+- `style.css` — styling
+- `app.js` — Three.js + meme fetching + saving
+
+## Credits
+Built with Three.js and the Meme API.
