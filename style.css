@@ -348,10 +348,7 @@ select:focus {
 .faq-section h2 {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--accent-light) 0%, var(--bg2-light) 50%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+    background: var(--accent-light);
   text-align: center;
   margin-bottom: 3rem;
   animation: fadeInDown 0.8s ease-out;
@@ -410,10 +407,7 @@ select:focus {
   }
   
   .faq-section h2 {
-    background: linear-gradient(135deg, var(--accent-dark) 0%, #a78bfa 50%, var(--bg2-dark) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+        background: var(--accent-dark);
   }
   
   .faq-content h3 {
