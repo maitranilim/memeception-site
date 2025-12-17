@@ -6,7 +6,13 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('canvas-container').appendChild(renderer.domElement);
+// Check if container exists before appending
+const canvasContainer = document.getElementById('canvas-container');
+if (canvasContainer) {
+    canvasContainer.appendChild(renderer.domElement);
+} else {
+    console.error('Canvas container not found');
+}
 
 // Geometry: Low Poly Icosahedron
 const geometry = new THREE.IcosahedronGeometry(1.5, 0);
@@ -76,14 +82,16 @@ function updateThreeColor(isDark) {
 /* -------------------------------------------------------------------------- */
 const card = document.getElementById('tilt-card');
 
-document.addEventListener('mousemove', (e) => {
-  if (window.innerWidth < 768) return; // Disable on mobile
+if (card) {
+  document.addEventListener('mousemove', (e) => {
+    if (window.innerWidth < 768) return; // Disable on mobile
 
-  const x = (window.innerWidth / 2 - e.pageX) / 25;
-  const y = (window.innerHeight / 2 - e.pageY) / 25;
+    const x = (window.innerWidth / 2 - e.pageX) / 25;
+    const y = (window.innerHeight / 2 - e.pageY) / 25;
 
-  card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-});
+    card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+  });
+}
 
 /* -------------------------------------------------------------------------- */
 /* MEME LOGIC (CORE)                                                          */
@@ -104,27 +112,49 @@ const els = {
   savedGrid: document.getElementById('saved-grid')
 };
 
-// Initialize
-fetchMeme();
+// Ensure critical elements exist before running logic
+if (els.fetchBtn && els.img) {
 
-// Event Listeners
-els.fetchBtn.addEventListener('click', () => {
-  // Trigger 3D Glitch Effect
-  shape.rotation.x += 1;
-  shape.rotation.y += 1;
-  shape.scale.set(1.2, 1.2, 1.2);
-  setTimeout(() => shape.scale.set(1, 1, 1), 200);
+    // Initialize
+    fetchMeme();
 
-  fetchMeme();
-});
+    // Event Listeners
+    els.fetchBtn.addEventListener('click', () => {
+    // Trigger 3D Glitch Effect
+    shape.rotation.x += 1;
+    shape.rotation.y += 1;
+    shape.scale.set(1.2, 1.2, 1.2);
+    setTimeout(() => shape.scale.set(1, 1, 1), 200);
 
-document.getElementById('genre-container').addEventListener('click', (e) => {
-  if (e.target.classList.contains('pill')) {
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    e.target.classList.add('active');
-    state.genre = e.target.dataset.value;
-  }
-});
+    fetchMeme();
+    });
+
+    const genreContainer = document.getElementById('genre-container');
+    if (genreContainer) {
+        genreContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('pill')) {
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            state.genre = e.target.dataset.value;
+        }
+        });
+    }
+
+    // --- SAVE SYSTEM ---
+    els.saveBtn.addEventListener('click', () => {
+    if (!state.currentMeme) return;
+    const saved = JSON.parse(localStorage.getItem('savedMemes') || '[]');
+    if (saved.some(m => m.url === state.currentMeme.url)) return alert('Saved already!');
+
+    saved.unshift(state.currentMeme);
+    localStorage.setItem('savedMemes', JSON.stringify(saved));
+    renderSaved();
+
+    // Feedback
+    els.saveBtn.innerText = '✅';
+    setTimeout(() => els.saveBtn.innerText = '💾', 1000);
+    });
+}
 
 // --- FETCH ---
 async function fetchMeme() {
@@ -167,26 +197,15 @@ async function fetchMeme() {
   els.credit.innerText = "Error fetching meme 😢";
 }
 
-// --- SAVE SYSTEM ---
-els.saveBtn.addEventListener('click', () => {
-  if (!state.currentMeme) return;
-  const saved = JSON.parse(localStorage.getItem('savedMemes') || '[]');
-  if (saved.some(m => m.url === state.currentMeme.url)) return alert('Saved already!');
-
-  saved.unshift(state.currentMeme);
-  localStorage.setItem('savedMemes', JSON.stringify(saved));
-  renderSaved();
-
-  // Feedback
-  els.saveBtn.innerText = '✅';
-  setTimeout(() => els.saveBtn.innerText = '💾', 1000);
-});
-
 // --- DRAWER LOGIC ---
-document.getElementById('view-saved-btn').addEventListener('click', () => els.savedDrawer.classList.add('open'));
-document.getElementById('close-drawer').addEventListener('click', () => els.savedDrawer.classList.remove('open'));
+const viewSavedBtn = document.getElementById('view-saved-btn');
+const closeDrawerBtn = document.getElementById('close-drawer');
+
+if (viewSavedBtn) viewSavedBtn.addEventListener('click', () => els.savedDrawer.classList.add('open'));
+if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', () => els.savedDrawer.classList.remove('open'));
 
 function renderSaved() {
+  if (!els.savedGrid) return;
   const saved = JSON.parse(localStorage.getItem('savedMemes') || '[]');
   els.savedGrid.innerHTML = saved.map((m, i) => `
     <div class="saved-thumb" onclick="loadSaved(${i})">
@@ -218,23 +237,25 @@ const themeToggle = document.getElementById('theme-toggle');
 const sun = document.getElementById('icon-sun');
 const moon = document.getElementById('icon-moon');
 
-// Check saved theme
-if (localStorage.getItem('theme') === 'dark') {
-  document.body.classList.add('dark-mode');
-  sun.style.display = 'none';
-  moon.style.display = 'block';
-  updateThreeColor(true);
+if (themeToggle) {
+    // Check saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    sun.style.display = 'none';
+    moon.style.display = 'block';
+    updateThreeColor(true);
+    }
+
+    themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+    sun.style.display = isDark ? 'none' : 'block';
+    moon.style.display = isDark ? 'block' : 'none';
+
+    updateThreeColor(isDark);
+    });
 }
-
-themeToggle.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-  sun.style.display = isDark ? 'none' : 'block';
-  moon.style.display = isDark ? 'block' : 'none';
-
-  updateThreeColor(isDark);
-});
 
 renderSaved();
